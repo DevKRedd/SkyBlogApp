@@ -67,6 +67,7 @@ jobs:
         with:
           ruby-version: 3.3.4
           bundler-cache: true
+          working-directory: skyblog
 
       # Install Chrome + Chromedriver for Capybara (if needed later)
       - name: Install Chrome + Chromedriver
