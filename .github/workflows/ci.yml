@@ -5,6 +5,11 @@ on:
     branches: [ main ]
   pull_request:
 
+# Run all commands inside the Rails backend folder
+defaults:
+  run:
+    working-directory: skyblog
+
 jobs:
   security_scan:
     runs-on: ubuntu-latest
@@ -20,6 +25,7 @@ jobs:
       - name: Run Brakeman security scanner
         run: bundle exec brakeman -q
 
+
   lint:
     runs-on: ubuntu-latest
 
@@ -34,6 +40,7 @@ jobs:
       - name: Run Rubocop
         run: bundle exec rubocop -f github
 
+
   test:
     runs-on: ubuntu-latest
 
@@ -41,7 +48,7 @@ jobs:
       postgres:
         image: postgres:14
         ports:
-          - '5432:5432'
+          - "5432:5432"
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -52,21 +59,23 @@ jobs:
           --health-retries=5
 
     steps:
-      - name: Install Chrome + Chromedriver for Capybara
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget gnupg
-          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-          sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list'
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable chromium-chromedriver
-
       - uses: actions/checkout@v4
 
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: .ruby-version
           bundler-cache: true
+
+      # Install Chrome + Chromedriver for Capybara (if needed later)
+      - name: Install Chrome + Chromedriver
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget gnupg
+          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" \
+            | sudo tee /etc/apt/sources.list.d/google.list
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable chromium-chromedriver
 
       - name: Prepare database
         env:
@@ -87,5 +96,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: system-test-screenshots
-          path: tmp/screenshots
+          path: skyblog/tmp/screenshots
           if-no-files-found: ignore
