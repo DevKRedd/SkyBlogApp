@@ -95,9 +95,7 @@ jobs:
         run: |
           bundle exec rspec \
             --format documentation \
-            --format progress \
             --backtrace \
-            --example-matches ""
 
       - name: Upload failed system test screenshots
         if: failure()
