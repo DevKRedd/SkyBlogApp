@@ -21,6 +21,7 @@ jobs:
         with:
           ruby-version: 3.3.4
           bundler-cache: true
+          working-directory: skyblog
 
       - name: Run Brakeman security scanner
         run: bundle exec brakeman -q
@@ -36,6 +37,7 @@ jobs:
         with:
           ruby-version: 3.3.4
           bundler-cache: true
+          working-directory: skyblog
 
       - name: Run Rubocop
         run: bundle exec rubocop -f github
@@ -65,6 +67,7 @@ jobs:
         with:
           ruby-version: 3.3.4
           bundler-cache: true
+          working-directory: skyblog
 
       # Install Chrome + Chromedriver for Capybara (if needed later)
       - name: Install Chrome + Chromedriver
