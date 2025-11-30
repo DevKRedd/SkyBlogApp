@@ -97,7 +97,7 @@ jobs:
             --format documentation \
             --format progress \
             --backtrace \
-            --example-matches
+            --example-matches ""
 
       - name: Upload failed system test screenshots
         if: failure()
