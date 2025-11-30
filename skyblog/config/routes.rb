@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   post "/signup", to: "users#create"
   post "/login",  to: "sessions#create"
 
-  resources :blog_posts, only: [:index, :show, :create, :update, :destroy]
+  resources :blog_posts, only: [ :index, :show, :create, :update, :destroy ]
 
   get "up" => "rails/health#show", as: :rails_health_check
 
