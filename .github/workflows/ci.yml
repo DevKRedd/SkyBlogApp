@@ -19,7 +19,7 @@ jobs:
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
+          ruby-version: skyblog/.ruby-version
           bundler-cache: true
 
       - name: Run Brakeman security scanner
@@ -34,7 +34,7 @@ jobs:
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
+          ruby-version: skyblog/.ruby-version
           bundler-cache: true
 
       - name: Run Rubocop
@@ -63,7 +63,7 @@ jobs:
 
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
+          ruby-version: skyblog/.ruby-version
           bundler-cache: true
 
       # Install Chrome + Chromedriver for Capybara (if needed later)
