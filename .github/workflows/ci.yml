@@ -40,7 +40,7 @@ jobs:
           working-directory: skyblog
 
       - name: Run Rubocop
-        run: bundle exec rubocop -f github
+        run: bundle exec rubocop --format progress --format github
 
 
   test:
@@ -67,7 +67,6 @@ jobs:
         with:
           ruby-version: 3.3.4
           bundler-cache: true
-          working-directory: skyblog
 
       # Install Chrome + Chromedriver for Capybara (if needed later)
       - name: Install Chrome + Chromedriver
@@ -92,7 +91,11 @@ jobs:
         env:
           RAILS_ENV: test
           DATABASE_URL: postgres://postgres:postgres@localhost:5432
-        run: bundle exec rspec --format documentation
+        run: |
+          bundle exec rspec \
+            --format documentation \
+            --format progress \
+            --backtrace
 
       - name: Upload failed system test screenshots
         if: failure()
