@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  skyblog:
+    build:
+      context: ./skyblog
+      dockerfile: Dockerfile.dev
+    container_name: skyblog_app
+    volumes:
+      - ./skyblog:/app
+    ports:
+      - "3001:3000"
+    environment:
+      RAILS_ENV: development
+      DATABASE_URL: postgres://postgres:postgres@db:5432
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14
+    container_name: skyblog_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:

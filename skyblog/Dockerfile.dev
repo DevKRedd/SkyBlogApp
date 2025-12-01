@@ -1,0 +1,34 @@
+# syntax=docker/dockerfile:1
+
+ARG RUBY_VERSION=3.3.4
+FROM ruby:${RUBY_VERSION} AS dev
+
+# Install OS packages needed for Rails + gems
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y \
+      build-essential \
+      curl \
+      libpq-dev \
+      postgresql-client \
+      libvips \
+      libjemalloc2 \
+      git && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives
+
+# Set working directory
+WORKDIR /app
+
+# Copy only Gemfile first (for faster caching)
+COPY Gemfile Gemfile.lock ./
+
+# Install all gems including development/test
+RUN bundle install
+
+# Copy entire application
+COPY . .
+
+# Expose local port
+EXPOSE 3000
+
+# Run Rails server in development mode
+CMD ["bin/rails", "server", "-b", "0.0.0.0"]
