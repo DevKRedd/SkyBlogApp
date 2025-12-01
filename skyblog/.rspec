@@ -1,6 +1,5 @@
 --require spec_helper
 --format documentation
 --backtrace
---example_updates
 --failure-exit-code 1
 --profile
