@@ -18,17 +18,25 @@ RUN apt-get update -qq && \
 # Set working directory
 WORKDIR /app
 
-# Copy only Gemfile first (for faster caching)
+# -----------------------------------------
+# ⚠️ Copy entrypoint BEFORE app files (better caching)
+# -----------------------------------------
+COPY entrypoint.sh /usr/bin/entrypoint.sh
+RUN chmod +x /usr/bin/entrypoint.sh
+
+ENTRYPOINT ["entrypoint.sh"]
+
+# Copy only Gemfile first (for caching)
 COPY Gemfile Gemfile.lock ./
 
-# Install all gems including development/test
+# Install dev + test gems
 RUN bundle install
 
-# Copy entire application
+# Copy entire project
 COPY . .
 
-# Expose local port
+# Expose dev server port
 EXPOSE 3000
 
-# Run Rails server in development mode
+# Run Rails server for development
 CMD ["bin/rails", "server", "-b", "0.0.0.0"]

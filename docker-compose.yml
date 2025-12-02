@@ -6,26 +6,55 @@ services:
       context: ./skyblog
       dockerfile: Dockerfile.dev
     container_name: skyblog_app
+
+    # Mount local code into container for hot reload
     volumes:
       - ./skyblog:/app
+      - /app/tmp # avoid PID conflicts by not persisting tmp folder to host
+
     ports:
-      - "3001:3000"
+      - "3000:3000"
+
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgres://postgres:postgres@db:5432
+      # Optional: Rails needs this for correct logging inside containers
+      RAILS_LOG_TO_STDOUT: "true"
+
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+
+    # Wait for Postgres to be ready BEFORE Rails boots
+    command: >
+      bash -c "
+        until pg_isready -h db -p 5432 -U postgres; do
+          echo '⏳ Waiting for Postgres...'
+          sleep 2
+        done &&
+        bin/rails server -b 0.0.0.0
+      "
 
   db:
     image: postgres:14
     container_name: skyblog_db
+
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: skyblog_development
+
     ports:
       - "5433:5432"
+
     volumes:
       - db_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
 volumes:
   db_data:
